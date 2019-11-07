@@ -1,47 +1,41 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import SongList from '../components/ReleaseDetail/SongList';
 import { getSongsApi } from '../services/musicBrainzApi';
 import PropTypes from 'prop-types';
 
-export default class SongPage extends Component {
+const SongPage = ({ match: { params: { id, artist } } }) => {
+  const [songs, setSongs] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  static propTypes = {
-    history: PropTypes.object.isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        id: PropTypes.string,
-        artist: PropTypes.string,
-      })
-    })
-  }
-
-  state = {
-    songs: [],
-    loading: true
-  }
-
-  getSongs = () => {
-    this.setState({ loading: true });
-    getSongsApi(this.props.match.params.id)
+  const getSongs = () => {
+    setLoading(true);
+    getSongsApi(id)
       .then(({ recordings }) => {
-        this.setState({ loading: false, songs: recordings.map(recording => {
-          return recording.title;
-        })
-        });
+        setSongs(recordings.map(recording => recording.title));
+        setLoading(false);
       });
-  }
+  };
 
-  componentDidMount() {
-    this.getSongs();
-  }
-  render() {
+  useEffect(() => {
+    getSongs();
+  }, []);
 
-    if(this.state.loading) return <img src='https://loading.io/spinners/music/lg.music-note-preloader.gif'/>;
+  if(loading) return <img src='https://loading.io/spinners/music/lg.music-note-preloader.gif'/>;
 
-    return (
-      <>
-      <SongList songs={this.state.songs} artist={this.props.match.params.artist} />;
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <SongList songs={songs} artist={artist} />;
+    </>
+  );
+};
+
+SongPage.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+      artist: PropTypes.string,
+    })
+  })
+};
+
+export default SongPage;

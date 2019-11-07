@@ -1,30 +1,17 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReleaseList from '../components/Release/ReleaseList';
 import { getRelease } from '../services/musicBrainzApi';
 import PropTypes from 'prop-types';
 
+const ReleasePage = ({ match: { params: { id, artist } } }) => {
 
-export default class ReleasePage extends Component {
+  const [releases, setReleases] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
 
-  static propTypes = {
-    history: PropTypes.object.isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        id: PropTypes.string,
-        artist: PropTypes.string
-      })
-    })
-  }
-
-  state = {
-    releases: [],
-    page: 0,
-    loading: true
-  }
-
-  getReleaseAndCoverArt = () => {
-    this.setState({ loading: true });
-    getRelease(this.props.match.params.id, this.state.page)
+  const getReleaseAndCoverArt = () => {
+    setLoading(true);
+    getRelease(id, page)
       .then((res) => {
         const releases = res.releases.map(release => {
           const coverArt = 'cover-art-archive';
@@ -34,44 +21,45 @@ export default class ReleasePage extends Component {
             id: release.id
           };
         });
-        this.setState({ releases, loading: false });
+        setReleases(releases);
+        setLoading(false);
       });
-  }
+  };
 
-  componentDidMount() {
-    this.getReleaseAndCoverArt();
-  }
+  useEffect(() => {
+    getReleaseAndCoverArt();
+  }, [page]);
 
-  componentDidUpdate(prevProps, prevState) {
-    if(prevState.page !== this.state.page) {
-      this.getReleaseAndCoverArt();
-    }
-  }
 
-  handlePageBackward = () => {
-    this.setState(state => {
-      if(state.page > 0) {
-        return ({ page: state.page - 1 });
-      }
-    });
-  }
+  const handlePageBackward = () => {
+    if(page > 0) setPage(page - 1);
+  };
 
-  handlePageForward = () => {
-    this.setState(state => ({ page: state.page + 1 }));
-  }
+  const handlePageForward = () => {
+    setPage(page + 1);
+  };
 
-  render() {
-    if(this.state.loading) return <img src='https://loading.io/spinners/music/lg.music-note-preloader.gif'/>;
 
-    return (
-      <>
-        <h1>Artist Releases</h1>
-        <button onClick={this.handlePageBackward}>Previous</button>
-        <button onClick={this.handlePageForward}>Next</button>
-        <ReleaseList releases={this.state.releases} artist={this.props.match.params.artist} />
-      </>
-    );
+  if(loading) return <img src='https://loading.io/spinners/music/lg.music-note-preloader.gif'/>;
 
-  }
+  return (
+    <>
+      <h1>Artist Releases</h1>
+      <button onClick={handlePageBackward}>Previous</button>
+      <button onClick={handlePageForward}>Next</button>
+      <ReleaseList releases={releases} artist={artist} />
+    </>
+  );
 
-}
+};
+
+ReleasePage.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+      artist: PropTypes.string
+    })
+  })
+};
+
+export default ReleasePage;
