@@ -12,7 +12,8 @@ const LyricPage = ({ match }) => {
     setLoading(true); 
     getLyrics(match.params.title, match.params.artist)
       .then((res) => {
-        setLyrics(res.lyrics);
+        if(res.lyrics) setLyrics(res.lyrics);
+        else setLyrics('No Lyrics Found');
         setLoading(false);
       });
   };
@@ -39,3 +40,5 @@ LyricPage.propTypes = {
     }).isRequired
   }).isRequired
 };
+
+export default LyricPage;

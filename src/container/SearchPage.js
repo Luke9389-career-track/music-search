@@ -1,23 +1,21 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import ArtistList from '../components/Artist/ArtistList';
 import Form from '../components/Form/Form';
 import { callApi } from '../services/musicBrainzApi';
 
-export default class SearchPage extends Component {
-  state = {
-    searchQuery: '',
-    artists: [],
-    page: 0,
-    loading: false
-  }
+const SearchPage = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [artists, setArtists] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
 
-  handleChange = ({ target }) => {
-    this.setState({ [target.name]: target.value });
-  }
+  const handleSearchQuery = ({ target }) => {
+    setSearchQuery(target.value);
+  };
 
-  getArtists = () => {
-    this.setState({ loading: true });
-    return callApi(this.state.searchQuery, this.state.page)
+  const getArtists = () => {
+    setLoading(true);
+    return callApi(searchQuery, page)
       .then(res => {
         const artists = res.artists.map(artist => {
           return {
@@ -26,51 +24,47 @@ export default class SearchPage extends Component {
             id: artist.id
           };
         });
-        this.setState({ artists, loading: false });
+        setArtists(artists);
+        setLoading(false);
       });
-  }
+  
+  };
 
-  componentDidUpdate(prevProps, prevState) {
-    if(prevState.page !== this.state.page) {
-      this.getArtists();
-    }
-  }
-
-
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
-    this.getArtists();
-  }
+    if(searchQuery === '') return;
+    getArtists();
+  };
 
-  handlePageBackward = () => {
-    this.setState(state => {
-      if(state.page > 0) {
-        return ({ page: state.page - 1 });
-      }
-    });
-  }
+  useEffect(() => {
+    if(searchQuery === '') return;
+    getArtists();
+  }, [page]);
+ 
+  const handlePageBackward = () => {
+    if(page > 0) setPage(page - 1);
+  };
 
-  handlePageForward = () => {
-    this.setState(state => ({ page: state.page + 1 }));
-  }
+  const handlePageForward = () => {
+    setPage(page + 1);
+  };
 
-  render() {
-    if(this.state.loading) return <img src='https://loading.io/spinners/music/lg.music-note-preloader.gif'/>;
 
-    return (
-      <>
-        <Form
-          handleChange={this.handleChange}
-          handleSubmit={this.handleSubmit}
-          searchQuery={this.state.searchQuery} />
-        <ArtistList
-          artists={this.state.artists}
-          handlePageForward={this.handlePageForward}
-          handlePageBackward={this.handlePageBackward} />
-      </>
+  if(loading) return <img src='https://loading.io/spinners/music/lg.music-note-preloader.gif'/>;
 
-    );
+  return (
+    <>
+      <Form
+        handleChange={handleSearchQuery}
+        handleSubmit={handleSubmit}
+        searchQuery={searchQuery} />
+      <ArtistList
+        artists={artists}
+        handlePageForward={handlePageForward}
+        handlePageBackward={handlePageBackward} />
+    </>
 
-  }
+  );
+};
 
-}
+export default SearchPage;

@@ -3,6 +3,7 @@ import ReleaseList from '../components/Release/ReleaseList';
 import { getRelease } from '../services/musicBrainzApi';
 import PropTypes from 'prop-types';
 
+
 export default class ReleasePage extends Component {
 
   static propTypes = {
@@ -56,9 +57,7 @@ export default class ReleasePage extends Component {
   }
 
   handlePageForward = () => {
-    this.setState(state => {
-      return ({ page: state.page + 1 });
-    });
+    this.setState(state => ({ page: state.page + 1 }));
   }
 
   render() {
