@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Form component renders Form 1`] = `
+<form
+  onSubmit={[MockFunction]}
+>
+  <input
+    name="searchQuery"
+    onChange={[MockFunction]}
+    placeholder="Search Artists"
+    type="text"
+    value="string"
+  />
+  <button>
+    Submit
+  </button>
+</form>
+`;
