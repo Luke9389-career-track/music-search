@@ -1,24 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import SongList from '../components/ReleaseDetail/SongList';
-import { getSongsApi } from '../services/musicBrainzApi';
 import PropTypes from 'prop-types';
+import useRecordings from '../hooks/useRecordings';
 
 const SongPage = ({ match: { params: { id, artist } } }) => {
-  const [songs, setSongs] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-  const getSongs = () => {
-    setLoading(true);
-    getSongsApi(id)
-      .then(({ recordings }) => {
-        setSongs(recordings.map(recording => recording.title));
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    getSongs();
-  }, []);
+  const { songs, loading } = useRecordings(id);
 
   if(loading) return <img src='https://loading.io/spinners/music/lg.music-note-preloader.gif'/>;
 

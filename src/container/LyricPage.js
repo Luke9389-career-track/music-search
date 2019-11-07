@@ -1,27 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Lyrics from '../components/lyrics/Lyrics';
-import { getLyrics } from '../services/lyricsApi';
+import useLyrics from '../hooks/useLyrics';
 import PropTypes from 'prop-types';
 
 const LyricPage = ({ match: { params: { title, artist } } }) => {
 
-  const [lyrics, setLyrics] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  const fetchLyrics = () => {
-    setLoading(true); 
-    getLyrics(title, artist)
-      .then((res) => {
-        if(res.lyrics) setLyrics(res.lyrics);
-        else setLyrics('No Lyrics Found');
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    fetchLyrics();
-  }, []);
-
+  const { lyrics, loading } = useLyrics(title, artist);
 
   if(loading) return <img src='https://loading.io/spinners/music/lg.music-note-preloader.gif'/>;
   return (

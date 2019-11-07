@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 
 
-export const callApi = (searchQuery, page = 0) => {
-
+export const getArtists = (searchQuery, page = 0) => {
   const url = `http://musicbrainz.org/ws/2/artist?query=${searchQuery}&fmt=json&limit=25&offset=${page * 25}`;
 
   return fetch(url)
@@ -13,7 +12,7 @@ export const callApi = (searchQuery, page = 0) => {
     });
 };
 
-export const getRelease = (artistId, page = 0) => {
+export const getReleases = (artistId, page = 0) => {
 
   const url = `http://musicbrainz.org/ws/2/release?artist=${artistId}&fmt=json&limit=25&offset=${page * 25}`;
 
@@ -24,7 +23,7 @@ export const getRelease = (artistId, page = 0) => {
     });
 };
 
-export const getSongsApi = (releaseId) => {
+export const getRecordings = (releaseId) => {
 
   const url = `http://musicbrainz.org/ws/2/recording?release=${releaseId}&fmt=json`;
 
