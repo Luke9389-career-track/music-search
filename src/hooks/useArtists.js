@@ -8,16 +8,6 @@ const useArtists = (page) => {
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleSearchQuery = ({ target }) => {
-    setSearchQuery(target.value);
-  };
-
-  const handleSubmit = event => {
-    event.preventDefault();
-    if(searchQuery === '') return;
-    fetchArtists();
-  };
-  
   const fetchArtists = () => {
     getArtists(searchQuery, page)
       .then(res => {
@@ -38,6 +28,18 @@ const useArtists = (page) => {
     setLoading(true);
     fetchArtists();
   }, [page]);
+
+
+  const handleSearchQuery = ({ target }) => {
+    setSearchQuery(target.value);
+  };
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    if(searchQuery === '') return;
+    fetchArtists();
+  };
+  
 
   return { artists, loading, searchQuery, handleSearchQuery, handleSubmit };
 };
