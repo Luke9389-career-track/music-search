@@ -8,8 +8,8 @@ const useRecordings = (releaseId) => {
   useEffect(() => {
     setLoading(true);
     getRecordings(releaseId)
-      .then(({ recordings }) => {
-        setSongs(recordings.map(recording => recording.title));
+      .then(fetchedRecordings => {
+        setSongs(fetchedRecordings);
         setLoading(false);
       });
   }, []);

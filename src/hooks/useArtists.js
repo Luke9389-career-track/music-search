@@ -10,14 +10,7 @@ const useArtists = (page) => {
 
   const fetchArtists = () => {
     getArtists(searchQuery, page)
-      .then(res => {
-        const fetchedArtists = res.artists.map(artist => {
-          return {
-            disamb: artist.disambiguation,
-            name: artist.name,
-            id: artist.id
-          };
-        });
+      .then(fetchedArtists => {
         setArtists(fetchedArtists);
         setLoading(false);
       });

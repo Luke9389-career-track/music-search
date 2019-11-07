@@ -9,9 +9,8 @@ const useLyrics = (title, artist) => {
   useEffect(() => {
     setLoading(true); 
     getLyrics(title, artist)
-      .then((res) => {
-        if(res.lyrics) setLyrics(res.lyrics);
-        else setLyrics('No Lyrics Found');
+      .then(fetchedLyrics => {
+        setLyrics(fetchedLyrics);
         setLoading(false);
       });
   }, []);

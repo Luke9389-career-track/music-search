@@ -5,6 +5,10 @@ export const getLyrics = (title, artist) => {
 
   return fetch(url)
     .then(res => res.json())
+    .then(({ lyrics }) => {
+      if(lyrics) return lyrics;
+      else return 'No Lyrics Found';
+    })
     .catch(error => {
       console.log(error);
     });

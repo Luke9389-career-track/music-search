@@ -9,16 +9,8 @@ const useReleases = (id, page) => {
   useEffect(() => {
     setLoading(true);
     getReleases(id, page)
-      .then((res) => {
-        const releases = res.releases.map(release => {
-          const coverArt = 'cover-art-archive';
-          return {
-            title: release.title,
-            imageUrl: release[coverArt].front ? `http://coverartarchive.org/release/${release.id}/front` : 'https://www.thesadsongco.com/media/images/notfound.jpg',
-            id: release.id
-          };
-        });
-        setReleases(releases);
+      .then(fetchedReleases => {
+        setReleases(fetchedReleases);
         setLoading(false);
       });
   }, [page]);
