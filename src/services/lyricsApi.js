@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 export const getLyrics = (title, artist) => {
 
   const url = `https://api.lyrics.ovh/v1/${artist}/${title}`;
