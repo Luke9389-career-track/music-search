@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchPage updates state with an array of artists 1`] = `
+<Fragment>
+  <SearchForm
+    handleChange={[Function]}
+    handleSubmit={[Function]}
+    searchQuery=""
+  />
+  <ArtistList
+    artists={Array []}
+    handlePageBackward={[Function]}
+    handlePageForward={[Function]}
+  />
+</Fragment>
+`;

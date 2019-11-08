@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Release component renders Release 1`] = `
+<Link
+  to="/songs/id/artist"
+>
+  <h3>
+    Phil
+  </h3>
+  <img
+    alt="Phil"
+    src="testUrl.com"
+  />
+</Link>
+`;
