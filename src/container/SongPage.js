@@ -1,47 +1,49 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import SongList from '../components/ReleaseDetail/SongList';
 import { getSongsApi } from '../services/musicBrainzApi';
 import PropTypes from 'prop-types';
 
-export default class SongPage extends Component {
+const SongPage = ({ match }) => {
+  const [songs, setSongs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [mount, setMount] = useState(true);
 
-  static propTypes = {
-    history: PropTypes.object.isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        id: PropTypes.string,
-        artist: PropTypes.string,
-      })
-    })
-  }
+  useEffect(() => {
+    if(!mount) {
+      setMount(false);
+      return;
+    }
+    getSongs();
+  }, []);
 
-  state = {
-    songs: [],
-    loading: true
-  }
-
-  getSongs = () => {
-    this.setState({ loading: true });
-    getSongsApi(this.props.match.params.id)
+  const getSongs = () => {
+    setLoading(true);
+    getSongsApi(match.params.id)
       .then(({ recordings }) => {
-        this.setState({ loading: false, songs: recordings.map(recording => {
+        const songs = recordings.map(recording => {
           return recording.title;
-        })
         });
+        setSongs(songs);
+        setLoading(false);
       });
-  }
+  };
 
-  componentDidMount() {
-    this.getSongs();
-  }
-  render() {
+  if(loading) return <img src='https://loading.io/spinners/music/lg.music-note-preloader.gif' />;
 
-    if(this.state.loading) return <img src='https://loading.io/spinners/music/lg.music-note-preloader.gif'/>;
+  return (
+    <>
+      <SongList songs={songs} artist={match.params.artist} />;
+    </>
+  );
+};
 
-    return (
-      <>
-      <SongList songs={this.state.songs} artist={this.props.match.params.artist} />;
-      </>
-    );
-  }
-}
+SongPage.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+      artist: PropTypes.string,
+    })
+  })
+};
+
+export default SongPage;
