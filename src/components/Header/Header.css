@@ -1,0 +1,15 @@
+.Header { 
+  h1{
+    background: black;
+    color: white;
+    padding: 10px 0px;
+    text-align: center;
+    font-size: 2em;
+  }
+  nav{
+    .Link{
+      
+      text-decoration: none;
+    }
+  }
+}

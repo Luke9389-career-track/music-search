@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ReleaseList component renders ReleaseList 1`] = `
+<ul
+  className="ReleaseList"
+>
+  <li
+    key="1"
+  >
+    <Release
+      artist=""
+      id="1"
+      imageUrl="testUrl.com"
+      title="Phil"
+    />
+  </li>
+</ul>
+`;
