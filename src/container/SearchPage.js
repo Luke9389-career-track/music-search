@@ -1,57 +1,19 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useState } from 'react';
 import ArtistList from '../components/Artist/ArtistList';
 import Form from '../components/Form/Form';
-import { callApi } from '../services/musicBrainzApi';
+import usePages from '../hooks/usePages';
+import useArtists from '../hooks/useArtists';
 
-function pageReducer(page, action) {
-  switch(action.type) {
-    case 'increment':
-      return page + 1;
-    case 'decrement':
-      return page - 1;
-    default:
-      return page;
-  }
-}
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [artists, setArtists] = useState([]);
-  const [page, dispatchPage] = useReducer(pageReducer, 0);
-  const [loading, setLoading] = useState(false);
+  const [page, next, previous] = usePages(0);
+  const [artists, loading, handleSubmit] = useArtists(page, searchQuery);
+
 
   const handleChange = ({ target }) => {
     setSearchQuery(target.value);
   };
-
-  const handleSubmit = event => {
-    event.preventDefault();
-    getArtists();
-  };
-
-  const getArtists = () => {
-    setLoading(true);
-    return callApi(searchQuery, page)
-      .then(res => {
-        const artists = res.artists.map(artist => {
-          return {
-            disamb: artist.disambiguation,
-            name: artist.name,
-            id: artist.id
-          };
-        });
-        setArtists(artists);
-        setLoading(false);
-      });
-  };
-
-
-  useEffect(() => {
-    if(searchQuery === '') return;
-    getArtists();
-  }, [page]);
-
-
 
   if(loading) return <img src='https://loading.io/spinners/music/lg.music-note-preloader.gif' />;
 
@@ -63,8 +25,8 @@ const SearchPage = () => {
         searchQuery={searchQuery} />
       <ArtistList
         artists={artists}
-        handlePageForward={() => dispatchPage({ type: 'increment' })}
-        handlePageBackward={() => dispatchPage({ type: 'decrement' })} />
+        handlePageForward={next}
+        handlePageBackward={previous} />
     </>
 
   );

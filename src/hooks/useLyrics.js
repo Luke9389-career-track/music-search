@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import { getSongsApi } from '../services/musicBrainzApi';
+import { getLyrics } from '../services/lyricsApi';
 
 const useLyrics = (title, artist) => {
   const [lyrics, setLyrics] = useState('');
   const [loading, setLoading] = useState(true);
-  console.log('getting lyrics');
+  
   useEffect(() => {
     setLoading(true);
-    getSongsApi(title, artist)
+    getLyrics(title, artist)
       .then((res) => {
         setLyrics(res.lyrics);
         setLoading(false);

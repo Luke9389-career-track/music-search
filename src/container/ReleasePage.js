@@ -1,52 +1,20 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React from 'react';
 import ReleaseList from '../components/Release/ReleaseList';
-import { getRelease } from '../services/musicBrainzApi';
 import PropTypes from 'prop-types';
-
-function pageReducer(page, action) {
-  switch(action.type) {
-    case 'increment':
-      return page + 1;
-    case 'decrement':
-      return page - 1;
-    default:
-      return page;
-  }
-}
+import usePages from '../hooks/usePages';
+import useReleaseAndCoverArt from '../hooks/useReleaseAndArt';
 
 const ReleasePage = ({ match }) => {
-  const [releases, setReleases] = useState([]);
-  const [page, dispatchPage] = useReducer(pageReducer, 0);
-  const [loading, setLoading] = useState(true);
-
-  const getReleaseAndCoverArt = () => {
-    setLoading(true);
-    getRelease(match.params.id, page)
-      .then((res) => {
-        const releases = res.releases.map(release => {
-          const coverArt = 'cover-art-archive';
-          return {
-            title: release.title,
-            imageUrl: release[coverArt].front ? `http://coverartarchive.org/release/${release.id}/front` : 'https://www.thesadsongco.com/media/images/notfound.jpg',
-            id: release.id
-          };
-        });
-        setReleases(releases);
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    getReleaseAndCoverArt();
-  }, [page]);
+  const [page, next, previous] = usePages(0);
+  const [releases, loading] = useReleaseAndCoverArt(page, match.params.id);
 
   if(loading) return <img src='https://loading.io/spinners/music/lg.music-note-preloader.gif' />;
 
   return (
     <>
       <h1>Artist Releases</h1>
-      <button onClick={() => dispatchPage({ type: 'decrement' })}>Previous</button>
-      <button onClick={() => dispatchPage({ type: 'increment' })}>Next</button>
+      <button onClick={previous}>Previous</button>
+      <button onClick={next}>Next</button>
       <ReleaseList releases={releases} artist={match.params.artist} />
     </>
   );
